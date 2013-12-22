@@ -1,5 +1,8 @@
 require 'spec_helper'
 
 describe User do
-  pending "add some examples to (or delete) #{__FILE__}"
+
+  it "is invalid without a twitter" do
+    Person.create({})
+  end
 end
