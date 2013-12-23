@@ -1,6 +1,28 @@
 <div class="center hero-unit">
   <h1>Welcome to Twit</h1>
 
-  <%= link_to "Recent Tweets", '#', class: "btn btn-large btn-primary" %>
-  <%= link_to "Followers Intersection", '#', class: "btn btn-large btn-primary" %>
+
+
+  <%= form_tag('#', method: 'get') do %>
+      <%= label_tag(:username, "Username: ") %>
+      <%= text_field_tag(:username) %>
+      <%= submit_tag("Go!") %>
+  <% end %>
+
+
+  <%= form_tag('#', method: 'get') do %>
+
+      <%= label_tag(:first_user, "User 1: ") %>
+      <%= text_field_tag(:first_user) %>
+
+      <%= label_tag(:second_user, "User 2: ") %>
+      <%= text_field_tag(:second_user) %>
+
+      <%= submit_tag("Go!") %>
+  <% end %>
+
 </div>
+
+
+<%= link_to "Recent Tweets", '#', class: "btn btn-large btn-primary" %>
+<%= link_to "Followers Intersection", '#', class: "btn btn-large btn-primary" %>

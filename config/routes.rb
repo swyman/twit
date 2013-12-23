@@ -1,6 +1,11 @@
 Twit::Application.routes.draw do
+
   get "twits/home"
-  get "twit/home"
+
+  get "tweets/:username" => "twits#for_user"
+
+  get "followers/:username" => "twits#followers"
+
   resources :users
 
   # The priority is based upon order of creation: first created -> highest priority.

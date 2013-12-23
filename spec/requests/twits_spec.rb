@@ -1,11 +1,13 @@
 require 'spec_helper'
 
 describe "Twits" do
-  describe "GET /twits" do
-    it "works! (now write some real specs)" do
-      # Run the generator again with the --webrat flag if you want to use webrat methods/matchers
-      get twits_index_path
-      response.status.should be(200)
+
+  describe "Home page" do
+
+    it "has Welcome to Twit content" do
+      visit '/twits/home'
+      expect(page).to have_content('Welcome to Twit')
     end
+
   end
 end

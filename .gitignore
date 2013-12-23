@@ -16,7 +16,7 @@
 /tmp
 
 # Ignore IDE
-.idea/
+.idea
 
 # Ignore secret
 .secret
