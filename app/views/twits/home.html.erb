@@ -1,22 +1,28 @@
 <div class="center hero-unit">
-  <h1>Welcome to Twit</h1>
+  <%= content_tag(:h1, 'Welcome to _Twit') %>
 
+  <%= form_tag('tweets', method: 'get', class:'form-inline') do %>
 
-
-  <%= form_tag('tweets', method: 'get') do %>
-      <%= label_tag(:username, "Username: ") %>
+      <div class="form-group">
+      <%= label_tag(:username, "User: ") %>
       <%= text_field_tag(:username) %>
+      </div>
       <%= submit_tag("Go!") %>
+
   <% end %>
 
 
-  <%= form_tag('follower_intersection', method: 'get') do %>
+  <%= form_tag('follower_intersection', method: 'get', class:'form-inline') do %>
 
+      <div class="form-group">
       <%= label_tag(:first_user, "User 1: ") %>
       <%= text_field_tag(:first_user) %>
+      </div>
 
+      <div class="form-group">
       <%= label_tag(:second_user, "User 2: ") %>
       <%= text_field_tag(:second_user) %>
+      </div>
 
       <%= submit_tag("Go!") %>
   <% end %>

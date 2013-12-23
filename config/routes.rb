@@ -6,6 +6,8 @@ Twit::Application.routes.draw do
 
   get "followers/:username" => "twits#followers"
 
+  get "follower_intersection" => "twits#follower_intersection"
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
