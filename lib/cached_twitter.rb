@@ -4,7 +4,7 @@ class CachedTwitter
 
     # maybe save an api hit
     bearer_token = @redis.get(:app_bearer_token)
-    p "token from redis: #{bearer_token}"
+    #p "token from redis: #{bearer_token}"
 
     # put secret stuff somewhere secret
     @client = Twitter::REST::Client.new do |args|
@@ -21,23 +21,27 @@ class CachedTwitter
 
 
 
-  def tweets_for_username(username)
+  def tweets_for_username(username, max_id)
     # if we have tweets in redis for this user, no request to twitter
-    redis_user_key = self.redis_tweet_key_for_user(username)
-    tweets = @redis.lrange(redis_user_key, 0, -1)
+    redis_tweets_key = self.redis_tweet_key_for_user(username, max_id)
+    p redis_tweets_key
+    tweets = @redis.lrange(redis_tweets_key, 0, -1)
     if tweets.empty?
 
       # must request from twitter
-      options = { :count => 10 }
+      options = { :count => 20 }
+      options[:max_id] = max_id unless max_id.nil?
+      p options
       responses = @client.user_timeline(username, options)
 
       # all we're storing is text of each tweet
       tweets = responses.map { |item| item.text }
 
       # cache these tweets locally for some period of time
-      @redis.lpush(redis_user_key, tweets)
-      @redis.expire(redis_user_key, 60)
+      @redis.rpush(redis_tweets_key, tweets)
+      @redis.expire(redis_tweets_key, 60)
     end
+
     tweets
   end
 
@@ -128,8 +132,8 @@ class CachedTwitter
 
 
 
-  def redis_tweet_key_for_user(user)
-    "tweets:#{user}"
+  def redis_tweet_key_for_user(user, max_id)
+    "tweets:#{user}#{max_id}"
   end
 
   def redis_follower_key_for_user(user)

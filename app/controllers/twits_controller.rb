@@ -15,8 +15,10 @@ class TwitsController < ApplicationController
 
   def for_user
 
+    @max_id = params[:max_id]
+    p @max_id
     @username = params[:username]
-    @tweets = @twitter.tweets_for_username(@username)
+    @tweets = @twitter.tweets_for_username(@username, @max_id)
 
   end
 
