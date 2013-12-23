@@ -1,8 +1,8 @@
 Twit::Application.routes.draw do
 
-  get "twits/home"
+  get "home" => "twits#home"
 
-  get "tweets/:username" => "twits#for_user"
+  get "tweets" => "twits#for_user"
 
   get "followers/:username" => "twits#followers"
 
