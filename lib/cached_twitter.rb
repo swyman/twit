@@ -32,14 +32,20 @@ class CachedTwitter
       options = { :count => 20 }
       options[:max_id] = max_id unless max_id.nil?
       p options
-      responses = @client.user_timeline(username, options)
 
-      # all we're storing is text of each tweet
-      tweets = responses.map { |item| item.text }
 
-      # cache these tweets locally for some period of time
-      @redis.rpush(redis_tweets_key, tweets)
-      @redis.expire(redis_tweets_key, 60)
+      begin
+        responses = @client.user_timeline(username, options)
+
+        # all we're storing is text of each tweet
+        tweets = responses.map { |item| item.text }
+
+        # cache these tweets locally for some period of time
+        @redis.rpush(redis_tweets_key, tweets)
+        @redis.expire(redis_tweets_key, 60)
+      rescue
+        tweets = []
+      end
     end
 
     tweets
@@ -63,8 +69,11 @@ class CachedTwitter
     redis_key = self.redis_follower_key_for_user(user)
     followers = self.get_follower_ids_from_remote(user)
 
-    @redis.sadd(redis_key, followers)
-    @redis.expire(redis_key, 1200)
+    if !followers.empty?
+      @redis.sadd(redis_key, followers)
+      @redis.expire(redis_key, 1200)
+    end
+
 
   end
 
@@ -73,12 +82,16 @@ class CachedTwitter
   # rate limit issue: can only grab 75k ids per 15 minute period
   def get_follower_ids_from_remote(user, follower_ids = [], cursor_val = -1)
     p user
-    cursor = @client.follower_ids(user, cursor: cursor_val, skip_status: 1, include_user_entities: false)
-    follower_ids.concat(cursor.entries)
-    if cursor.next == 0
-      follower_ids
-    else
-      self.get_follower_ids_from_remote(user, follower_ids, cursor.next)
+    begin
+      cursor = @client.follower_ids(user, cursor: cursor_val, skip_status: 1, include_user_entities: false)
+      follower_ids.concat(cursor.entries)
+      if cursor.next == 0
+        follower_ids
+      else
+        self.get_follower_ids_from_remote(user, follower_ids, cursor.next)
+      end
+    rescue
+      []  # return nothing
     end
   end
 
@@ -109,10 +122,12 @@ class CachedTwitter
     self.add_username_cache_entries(need_to_contact_twitter)
 
     intersect_ids.map! { |id| self.redis_username_key_for_id(id) }
-    @redis.mget(intersect_ids)
-    #to_return = @client.users(intersect_ids, include_entities: false)
-    #p to_return
-    #to_return
+    if (intersect_ids.empty?)
+      []
+    else
+      @redis.mget(intersect_ids)
+    end
+
   end
 
   def add_username_cache_entries(ids)
