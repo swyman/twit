@@ -1,28 +1,17 @@
-<%= @foo %>
-
-<br>
-<br>
-
-<h1>Recent Tweets</h1>
+<h1>Followers for <%= @username %></h1>
 
 <table>
   <thead>
   <tr>
-    <th>Tweets</th>
-    <th></th>
-    <th></th>
-    <th></th>
+    <th>Followers</th>
   </tr>
   </thead>
 
   <tbody>
-  <% @stuff.each do |follower| %>
+  <% @followers.each do |follower| %>
       <tr>
-        <td><%= follower.inspect %></td>
-
+        <td><%= follower %></td>
       </tr>
   <% end %>
   </tbody>
 </table>
-
-<br>

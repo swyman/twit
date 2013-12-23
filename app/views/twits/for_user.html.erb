@@ -1,1 +1,17 @@
 <h1>Recent Tweets from <%= @username %></h1>
+
+<table>
+  <thead>
+  <tr>
+    <th>Tweets</th>
+  </tr>
+  </thead>
+
+  <tbody>
+  <% @tweets.each do |tweet| %>
+      <tr>
+        <td><%= tweet %></td>
+      </tr>
+  <% end %>
+  </tbody>
+</table>
